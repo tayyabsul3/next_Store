@@ -25,7 +25,6 @@ const Header = () => {
 
   const dispatch = useAppDispatch();
   const { isAuthenticated, user } = useAppSelector((state) => state.user);
-  const { role } = user;
   const router = useRouter(); // Added useRouter hook for redirection
 
   // Logout function
@@ -49,6 +48,7 @@ const Header = () => {
     getUserData(dispatch);
   }, [dispatch]);
 
+  
   return (
     <div>
       {shouldHideHeader ? (

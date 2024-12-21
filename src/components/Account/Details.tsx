@@ -6,9 +6,9 @@ import Load from "../Reusables/Load";
 import { useAppSelector } from "@/redux/hooks";
 
 const Details = () => {
-  const { user: ReduxUser } = useAppSelector((state) => state.user);
-  const [user, setUser] = useState({
-    ...ReduxUser,
+  const { user } = useAppSelector((state) => state.user);
+  const [User, setUser] = useState({
+    ...user,
     oldPassword: "",
     newPassword: "",
     confirmNewPassword: "",
@@ -17,10 +17,8 @@ const Details = () => {
     shownewconfirmPassword: false,
   });
 
-  // Track if any field is modified
   const [modified, setModified] = useState(false);
 
-  // Handle change in form fields
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setUser((prevState) => {
@@ -36,7 +34,6 @@ const Details = () => {
     });
   };
 
-  // Button styling based on modification
   const buttonStyle = modified
     ? "bg-black text-white p-2  transition-all duration-300 w-fit rounded-md hover:bg-black/90 text-xs px-5"
     : "bg-gray-100 text-gray-300 p-2  transition-all duration-300 w-fit rounded-md cursor-not-allowed text-xs px-5";
@@ -44,14 +41,14 @@ const Details = () => {
   const [load, setload] = useState(false);
 
   const handleUpdatePassword = async () => {
-    if (user.newPassword !== user.confirmNewPassword) {
+    if (User.newPassword !== User.confirmNewPassword) {
       toast.error("Passwords do not match.");
       return;
     }
     if (
-      user.oldPassword.trim() === "" ||
-      user.newPassword.trim() === "" ||
-      user.confirmNewPassword.trim() === ""
+      User.oldPassword.trim() === "" ||
+      User.newPassword.trim() === "" ||
+      User.confirmNewPassword.trim() === ""
     ) {
       toast.error("Please fill all password fields and try again.");
       return;
@@ -59,9 +56,9 @@ const Details = () => {
 
     // Prepare data for API request
     const data = {
-      password: user.oldPassword,
-      newPassword: user.newPassword,
-      confirmPassword: user.confirmNewPassword,
+      password: User.oldPassword,
+      newPassword: User.newPassword,
+      confirmPassword: User.confirmNewPassword,
     };
     console.log(data);
 
@@ -91,7 +88,6 @@ const Details = () => {
             confirmNewPassword: "",
           };
         });
-        
       }
     } catch (err) {
       toast.error("Failed to update password. Please try again later.");
@@ -101,6 +97,11 @@ const Details = () => {
     }
   };
 
+  useEffect(() => {
+    setUser((prev) => {
+      return { ...prev, ...user };
+    });
+  }, [user]);
   return (
     <div className="AccountDetails w-full flex gap-10">
       <div className="space-y-5 flex-1">
@@ -113,9 +114,9 @@ const Details = () => {
             Id
           </label>
           <input
-            type="email"
-            name="email"
-            value={user._id}
+            type="text"
+            name="id"
+            value={User._id}
             placeholder="id"
             className="border p-2 px-5 text-xs w-full outline-none border-gray-400 rounded-lg bg-transparent"
             readOnly
@@ -131,7 +132,7 @@ const Details = () => {
           <input
             type="text"
             name="displayName"
-            value={user.name}
+            value={User.name}
             onChange={handleChange}
             readOnly
             placeholder="Display name"
@@ -148,7 +149,7 @@ const Details = () => {
           <input
             type="email"
             name="email"
-            value={user.email}
+            value={User.email}
             onChange={handleChange}
             placeholder="Email"
             className="border p-2 px-5 text-xs w-full outline-none border-gray-400 rounded-lg bg-transparent"
@@ -168,9 +169,9 @@ const Details = () => {
           </label>
           <div className="relative">
             <input
-              type={user.showoldPassword ? "text" : "password"}
+              type={User.showoldPassword ? "text" : "password"}
               name="oldPassword"
-              value={user.oldPassword}
+              value={User.oldPassword}
               onChange={handleChange}
               placeholder="Old password"
               className="border p-2 px-5 text-xs w-full outline-none border-gray-400 rounded-lg bg-transparent"
@@ -180,12 +181,12 @@ const Details = () => {
               className="absolute right-3 top-1/2 transform text-xs -translate-y-1/2"
               onClick={() =>
                 setUser({
-                  ...user,
-                  showoldPassword: !user.showoldPassword,
+                  ...User,
+                  showoldPassword: !User.showoldPassword,
                 })
               }
             >
-              {user.showoldPassword ? "Hide" : "Show"}
+              {User.showoldPassword ? "Hide" : "Show"}
             </button>
           </div>
         </div>
@@ -198,9 +199,9 @@ const Details = () => {
           </label>
           <div className="relative">
             <input
-              type={user.shownewPassword ? "text" : "password"}
+              type={User.shownewPassword ? "text" : "password"}
               name="newPassword"
-              value={user.newPassword}
+              value={User.newPassword}
               onChange={handleChange}
               placeholder="New password"
               className="border p-2 px-5 text-xs w-full outline-none border-gray-400 rounded-lg bg-transparent"
@@ -210,12 +211,12 @@ const Details = () => {
               className="absolute right-3 top-1/2 transform text-xs -translate-y-1/2"
               onClick={() =>
                 setUser({
-                  ...user,
-                  shownewPassword: !user.shownewPassword,
+                  ...User,
+                  shownewPassword: !User.shownewPassword,
                 })
               }
             >
-              {user.shownewPassword ? "Hide" : "Show"}
+              {User.shownewPassword ? "Hide" : "Show"}
             </button>
           </div>
         </div>
@@ -228,9 +229,9 @@ const Details = () => {
           </label>
           <div className="relative">
             <input
-              type={user.shownewconfirmPassword ? "text" : "password"}
+              type={User.shownewconfirmPassword ? "text" : "password"}
               name="confirmNewPassword"
-              value={user.confirmNewPassword}
+              value={User.confirmNewPassword}
               onChange={handleChange}
               placeholder="Repeat New Password"
               className="border p-2 px-5 text-xs w-full outline-none border-gray-400 rounded-lg bg-transparent"
@@ -240,12 +241,12 @@ const Details = () => {
               className="absolute right-3 top-1/2 transform text-xs -translate-y-1/2"
               onClick={() =>
                 setUser({
-                  ...user,
-                  shownewconfirmPassword: !user.shownewconfirmPassword,
+                  ...User,
+                  shownewconfirmPassword: !User.shownewconfirmPassword,
                 })
               }
             >
-              {user.shownewconfirmPassword ? "Hide" : "Show"}
+              {User.shownewconfirmPassword ? "Hide" : "Show"}
             </button>
           </div>
         </div>

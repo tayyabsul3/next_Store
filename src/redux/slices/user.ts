@@ -85,6 +85,7 @@ const userSlice = createSlice({
     },
     UpdateUserData: (state, action) => {
       const { user } = action.payload;
+
       if (user) {
         state.user = user;
       }
