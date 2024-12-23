@@ -6,7 +6,7 @@ const Address = () => {
       <h1>
         <h1 className="font-semibold text-xl">Address</h1>
       </h1>
-      <div className="flex gap-5">
+      <div className="flex gap-5 flex-wrap">
         <div className="space-y-2 border border-black p-5 rounded-md">
           <div className="top flex justify-between font-semibold ">
             <h1 className=" ">Billing Address</h1>

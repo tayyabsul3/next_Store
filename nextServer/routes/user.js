@@ -12,7 +12,7 @@ router
   .post("/password/forgot", userController.forgotPassword)
   .put("/password/reset/:token", userController.resetPassword)
   .put("/password/update", authentication, userController.updatePassword)
-  .put("/me/update", authentication, userController.updateProfile)
+  .put("/update/:id", authentication, userController.updateProfile)
   .get("/", authentication, adminAuth("admin"), userController.GetAllUsers)
   .get("/:id", authentication, adminAuth("admin"), userController.getUser)
   .delete(

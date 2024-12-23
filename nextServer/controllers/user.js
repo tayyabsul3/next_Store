@@ -216,30 +216,30 @@ exports.GetAllUsers = catchAysncErrors(async (req, res, next) => {
 });
 
 exports.getUser = catchAysncErrors(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const users = await User.findById(req.params.id);
 
-  if (!user) {
+  if (!users) {
     return next(new ErrorHandler("User not Found", 404));
   }
 
   res.status(200).json({
     sucess: true,
-    user,
+    users,
   });
 });
 
-exports.getUser = catchAysncErrors(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+// exports.getUser = catchAysncErrors(async (req, res, next) => {
+//   const user = await User.findById(req.params.id);
 
-  if (!user) {
-    return next(new ErrorHandler("User not Found", 404));
-  }
+//   if (!user) {
+//     return next(new ErrorHandler("User not Found", 404));
+//   }
 
-  res.status(200).json({
-    sucess: true,
-    user,
-  });
-});
+//   res.status(200).json({
+//     sucess: true,
+//     user,
+//   });
+// });
 
 exports.deleteUser = catchAysncErrors(async (req, res, next) => {
   const user = await User.findByIdAndDelete(req.params.id);

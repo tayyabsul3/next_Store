@@ -82,16 +82,15 @@ exports.getAllOrders_Admin = catchAsyncErrors(async (req, res, next) => {
 
 // Get a single  Order
 exports.getOrder = catchAsyncErrors(async (req, res, next) => {
-  const order = await Order.findById(req.params.id);
+  const orders = await Order.findById(req.params.id);
 
-  if (!order) {
+  if (!ordesr) {
     return next(new ErrorHandler("Order not found", 404));
   }
 
   res.status(200).json({
     sucess: true,
-
-    order,
+    orders,
   });
 });
 
@@ -121,9 +120,9 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Already Delivered", 400));
   }
 
-  order.orderItems.forEach(async (o) => {
-    await updateStocks(o.Product, o.quantity);
-  });
+  // order.orderItems.forEach(async (o) => {
+  //   await updateStocks(o.Product, o.quantity);
+  // });
 
   order.orderStatus = req.body.status;
 
@@ -134,7 +133,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
   order.save({ validateBeforeSave: false });
   res.status(200).json({
     sucess: true,
-    message: "Order succesFully deleted",
+    message: "Order status updated",
   });
 });
 

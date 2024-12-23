@@ -14,41 +14,7 @@ const productSlice = createSlice({
   initialState: {
     items: [],
     item: {},
-    cart: [
-      {
-        stock: 1,
-        _id: "675fd44163b9914ec291790a",
-        title: "Essence Mascara Lash Princess",
-        description:
-          "The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free formula.",
-        category: "beauty",
-        price: 9.99,
-        numOfReviews: 0,
-        rating: 4.94,
-        Stock: 1,
-        thumbnail:
-          "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png",
-        discountPercentage: 7.17,
-        images: [
-          "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/1.png",
-        ],
-        tags: ["New"],
-        reviews: [
-          {
-            user: "675fcb59d119938f2f3d140b",
-            name: "John Doe",
-            date: "2024-05-23T08:56:21.618Z",
-            rating: 2,
-            comment: "Very unhappy with my purchase!",
-            _id: "675fd44163b9914ec291790b",
-          },
-        ],
-        user: "675fcb59d119938f2f3d140b",
-        createdAt: "2024-12-16T07:18:21.466Z",
-        __v: 0,
-        quantity: 1,
-      },
-    ],
+    cart: [],
   } as ProductState,
   reducers: {
     addtocart: (state, action: PayloadAction<{ item: Product }>) => {

@@ -3,17 +3,10 @@ import React from "react";
 
 const Hero = () => {
   return (
-    <div
-      style={{
-        backgroundImage: "url(/hero.png)",
-        backgroundPosition: "top",
-        backgroundSize: "cover",
-      }}
-      className="h-[100vh] w-full "
-    >
-      <div className="max-w-4xl mx-auto flex   justify-end  items-center h-full ">
-        <div className=" max-w-md  ml-60">
-          <h1 className="text-5xl font-bold">
+    <div className="h-[100dvh] w-full bg-[url('/hero.png')] bg-top bg-cover ">
+      <div className="max-w-4xl mx-auto flex  justify-center  md:justify-end   items-center h-full ">
+        <div className=" max-w-md  sm:ml-60 p-5  ">
+          <h1 className="text-4xl 2xl:text-5xl font-bold">
             Listen to the <span className="text-blue-500">amazing</span> music
             sound
           </h1>

@@ -19,7 +19,16 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 } */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
+/* Hide the number input spinners in Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 .no_scrollbar::-webkit-scrollbar {
   display: none;
 }

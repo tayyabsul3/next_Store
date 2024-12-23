@@ -6,7 +6,7 @@ env.config("./.env");
 
 process.on("uncaughtException", (err) => {
   console.log(`Error:${err.message}`);
-  console.log("Server Shutting Down due to INvalid String in DB");
+  console.log("Server Shutting Down due to Invalid String in DB");
   process.exit(1);
 });
 

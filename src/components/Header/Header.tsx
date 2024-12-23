@@ -14,6 +14,8 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { Authenticate } from "@/redux/slices/user";
+import MobileHeader from "./MobileHeader";
+import { updateState } from "@/redux/slices/states";
 
 const Header = () => {
   const pathname = usePathname();
@@ -48,13 +50,12 @@ const Header = () => {
     getUserData(dispatch);
   }, [dispatch]);
 
-  
   return (
     <div>
       {shouldHideHeader ? (
         ""
       ) : (
-        <header className="bg-transparent absolute top-0 w-full">
+        <header className="absolute top-0 w-full bg-transparent ">
           <div className="flex p-5 justify-between items-center max-w-7xl mx-auto">
             <Link href={"/"} className="font-bold text-2xl">
               3legant.
@@ -98,7 +99,16 @@ const Header = () => {
               <Cart />
             </div>
             <div className="mobileheader md:hidden">
-              <button>
+              <MobileHeader />
+              <button
+                onClick={() => {
+                  dispatch(
+                    updateState({
+                      mobileheader: true,
+                    })
+                  );
+                }}
+              >
                 <IoIosMenu size={25} />
               </button>
             </div>

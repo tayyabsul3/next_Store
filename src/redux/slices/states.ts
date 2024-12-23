@@ -15,6 +15,9 @@ const globalState = createSlice({
     toogleShowCart: (state, action) => {
       state.iscartvisible = !state.iscartvisible;
     },
+    toogleShowHeader: (state, action) => {
+      state.mobileheader = !state.mobileheader;
+    },
     updateState: (state, action) => {
       const { mobileheader } = action.payload;
       if (mobileheader) {
@@ -24,6 +27,7 @@ const globalState = createSlice({
   },
 });
 
-export const { toogleShowCart, updateState } = globalState.actions;
+export const { toogleShowCart, updateState, toogleShowHeader } =
+  globalState.actions;
 
 export default globalState.reducer;

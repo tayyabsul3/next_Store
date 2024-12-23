@@ -9,6 +9,15 @@ import React, { useEffect, useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import axios from "axios";
 import { toast } from "sonner";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "@/components/Cart/CheckoutForm";
+
+if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
+  throw new Error("Please provide a public key");
+}
+
+const stripPromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 const page = () => {
   const dispatch = useAppDispatch();
@@ -44,13 +53,13 @@ const page = () => {
     );
     return (cartTotal + shippingPrice).toFixed(2);
   };
-  const CalculateSubTotalPrice = () => {
-    const cartTotal = cart.reduce(
-      (acc, curr) => acc + curr.price * curr.quantity,
-      0
-    );
-    return cartTotal.toFixed(2);
-  };
+  // const CalculateSubTotalPrice = () => {
+  //   const cartTotal = cart.reduce(
+  //     (acc, curr) => acc + curr.price * curr.quantity,
+  //     0
+  //   );
+  //   return cartTotal.toFixed(2);
+  // };
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -176,21 +185,11 @@ const page = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const {
-      firstName,
-      lastName,
-      phoneNumber,
-      email,
-      streetAddress,
-      country,
-      city,
-      state,
-      zipCode,
-      cardNumber,
-      expirationDate,
-      cvc,
-    } = formData;
-
+    const { phoneNumber, streetAddress, country, city, state } = formData;
+    if (!streetAddress || !city || !state || !country || !phoneNumber) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
     const shippingPrice =
       shippingOptions.find((option) => option.id === selectedOption)?.price ||
       0;
@@ -203,7 +202,6 @@ const page = () => {
         quantity: item.quantity,
       });
     });
-
     const data = {
       subtotal: CalculateSubTotalPrice(),
       shipping: shippingPrice,
@@ -218,11 +216,31 @@ const page = () => {
       },
       orderItems: items,
     };
-    newOrder(data);
+    dispatch(
+      createOrder({
+        data: data,
+      })
+    );
+    localStorage.setItem("order", JSON.stringify(data));
+    setcompleted([0, 1]);
+    console.log(data);
+    setactiveOption(2);
   };
+
+  function convertSubcurrency(amount: number) {
+    return Math.round(amount * 100);
+  }
+  const CalculateSubTotalPrice = () => {
+    const cartTotal = cart.reduce(
+      (acc, curr) => acc + curr.price * curr.quantity,
+      0
+    );
+    return cartTotal.toFixed(2);
+  };
+
   return (
     <div>
-      <div className="mx-auto max-w-7xl mt-20">
+      <div className="mx-auto max-w-7xl mt-20 max-2xl:px-5">
         <h1 className="my-40 mb-20 text-center text-5xl font-medium">Cart</h1>
         <div className="buttons flex justify-around my-10 ">
           {steps.map((step, i) => (
@@ -302,7 +320,7 @@ const page = () => {
               <div className="amount space-y-2">
                 <div className="subtotal flex justify-between  border-b pb-5">
                   <p>Subtotal</p>
-                  <p>${CalculateTotalPrice()}</p>
+                  <p>${CalculateSubTotalPrice()}</p>
                 </div>
                 <div className="total font-medium text-lg flex justify-between ">
                   <p>Total</p>
@@ -332,82 +350,13 @@ const page = () => {
           <div className="flex gap-10 mb-20">
             <div className="OrderDetails flex-1 space-y-10">
               <div className="customerDetails flex flex-col gap-5 border-2 border-black rounded-md p-10">
-                <h1 className="text-2xl font-medium">Customer Details</h1>
-                <div className="flex gap-5 w-full">
-                  <div className="field flex flex-col gap-2  w-full">
-                    <label
-                      htmlFor="firstName"
-                      className="font-semibold uppercase text-sm text-gray-500"
-                    >
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      placeholder="First name"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
-                    />
-                  </div>
-                  <div className="field flex flex-col gap-2 w-full">
-                    <label
-                      htmlFor="lastName"
-                      className="font-semibold uppercase text-sm text-gray-500"
-                    >
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      placeholder="Last name"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
-                    />
-                  </div>
-                </div>
-                <div className="field flex flex-col gap-2  w-full">
-                  <label
-                    htmlFor="phoneNumber"
-                    className="font-semibold uppercase text-sm text-gray-500"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    type="text"
-                    name="phoneNumber"
-                    placeholder="Phone number"
-                    value={formData.phoneNumber}
-                    onChange={handleInputChange}
-                    className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
-                  />
-                </div>
-                <div className="field flex flex-col gap-2  w-full">
-                  <label
-                    htmlFor="email"
-                    className="font-semibold uppercase text-sm text-gray-500"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    type="text"
-                    name="email"
-                    placeholder="Your Email Address"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
-                  />
-                </div>
-              </div>
-              <div className="customerDetails flex flex-col gap-5 border-2 border-black rounded-md p-10">
                 <h1 className="text-2xl font-medium">Shipping Address</h1>
                 <div className="field flex flex-col gap-2  w-full">
                   <label
                     htmlFor="streetAddress"
                     className="font-semibold uppercase text-sm text-gray-500"
                   >
-                    Street Address *
+                    Street Address 
                   </label>
                   <input
                     type="text"
@@ -418,12 +367,29 @@ const page = () => {
                     className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
                   />
                 </div>
+                <div className="field flex flex-col gap-2  w-full">
+                  <label
+                    htmlFor="phoneNumber"
+                    className="font-semibold uppercase text-sm text-gray-500"
+                  >
+                    Phone Number
+                  </label>
+                  <input
+                    type="number"
+                    name="phoneNumber"
+                    placeholder="Phone Number"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
+                  />
+                </div>
                 <div className="field flex flex-col gap-2 w-full">
                   <label
                     htmlFor="country"
                     className="font-semibold uppercase text-sm text-gray-500"
                   >
-                    Country *
+                    Country 
+                    
                   </label>
                   <input
                     type="text"
@@ -456,7 +422,7 @@ const page = () => {
                       htmlFor="state"
                       className="font-semibold uppercase text-sm text-gray-500"
                     >
-                      State
+                      State/Province
                     </label>
                     <input
                       type="text"
@@ -467,7 +433,7 @@ const page = () => {
                       className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
                     />
                   </div>
-                  <div className="field flex flex-col gap-2  w-full">
+                  {/* <div className="field flex flex-col gap-2  w-full">
                     <label
                       htmlFor="zipCode"
                       className="font-semibold uppercase text-sm text-gray-500"
@@ -482,60 +448,7 @@ const page = () => {
                       onChange={handleInputChange}
                       className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
                     />
-                  </div>
-                </div>
-              </div>
-              <div className="customerDetails flex flex-col gap-5 border-2 border-black rounded-md p-10">
-                <h1 className="text-2xl font-medium">Payment Details</h1>
-                <div className="field flex flex-col gap-2  w-full">
-                  <label
-                    htmlFor="cardNumber"
-                    className="font-semibold uppercase text-sm text-gray-500"
-                  >
-                    Card Number
-                  </label>
-                  <input
-                    type="text"
-                    name="cardNumber"
-                    placeholder="1234 1234 1234 1234"
-                    value={formData.cardNumber}
-                    onChange={handleInputChange}
-                    className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
-                  />
-                </div>
-                <div className="flex gap-5 w-full">
-                  <div className="field flex flex-col gap-2  w-full">
-                    <label
-                      htmlFor="expirationDate"
-                      className="font-semibold uppercase text-sm text-gray-500"
-                    >
-                      Expiration Date
-                    </label>
-                    <input
-                      type="text"
-                      name="expirationDate"
-                      placeholder="Expiration Date"
-                      value={formData.expirationDate}
-                      onChange={handleInputChange}
-                      className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
-                    />
-                  </div>
-                  <div className="field flex flex-col gap-2  w-full">
-                    <label
-                      htmlFor="cvc"
-                      className="font-semibold uppercase text-sm text-gray-500"
-                    >
-                      Cvc
-                    </label>
-                    <input
-                      type="text"
-                      name="cvc"
-                      placeholder="CVC code"
-                      value={formData.cvc}
-                      onChange={handleInputChange}
-                      className="border p-2 px-5 w-full outline-none border-gray-400 rounded-lg bg-transparent"
-                    />
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <button
@@ -568,7 +481,7 @@ const page = () => {
                           onClick={() => {
                             dispatch(
                               updateQuantity({
-                                id: cartItem.id,
+                                id: cartItem._id,
                                 type: "decrease",
                               })
                             );
@@ -581,7 +494,7 @@ const page = () => {
                           onClick={() => {
                             dispatch(
                               updateQuantity({
-                                id: cartItem.id,
+                                id: cartItem._id,
                                 type: "increase",
                               })
                             );
@@ -613,7 +526,7 @@ const page = () => {
                 </div>
                 <div className="subtotal flex justify-between  border-b pb-3">
                   <p>Subtotal</p>
-                  <p className="font-semibold">${CalculateTotalPrice()}</p>
+                  <p className="font-semibold">${CalculateSubTotalPrice()}</p>
                 </div>
                 <div className="total font-medium text-lg flex justify-between ">
                   <p>Total</p>
@@ -624,40 +537,17 @@ const page = () => {
           </div>
         ) : (
           <div className="p-20 shadow-2xl flex-col gap-2 flex justify-center items-center m-20 max-w-5xl mx-auto">
-            <p className="text-2xl text-gray-600 font-semibold">Thank you 🎉</p>
-            <h1 className="text-5xl max-w-md mt-2 font-medium text-center ">
-              Your order has been received
-            </h1>
-            <div className="items mt-10  flex gap-10 flex-wrap my-5">
-              {cartItems.map((item, i) => (
-                <div className="item relative" key={i}>
-                  <img src={item.thumbnail} alt="" className="w-20" />
-                  <p className="absolute -top-2 font-semibold -right-2 text-sm w-6 h-6 flex justify-center items-center bg-black text-white rounded-full">
-                    {item.quantity}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="details space-y-2 mt-5">
-              {cartItems.map((item, i) => (
-                <div className="row text-gray-400 font-bold  flex" key={i}>
-                  <h1 className="w-40">Order code:</h1>
-                  <p className="text-black ">#{Math.random()}</p>
-                </div>
-              ))}
-            </div>
-            <div className="space-x-5">
-              <Link href={"/"}>
-                <button className="rounded-full bg-black px-5 p-3 text-white mt-10">
-                  Shop More
-                </button>
-              </Link>
-              <Link href={"/"}>
-                <button className="rounded-full bg-black px-5 p-3 text-white mt-10">
-                  Purchase history
-                </button>
-              </Link>
-            </div>
+            <h1>Your have to pay ${CalculateTotalPrice()}</h1>
+            <Elements
+              stripe={stripPromise}
+              options={{
+                mode: "payment",
+                amount: convertSubcurrency(CalculateTotalPrice()),
+                currency: "usd",
+              }}
+            >
+              <CheckoutForm amount={CalculateTotalPrice()} />
+            </Elements>
           </div>
         )}
       </div>

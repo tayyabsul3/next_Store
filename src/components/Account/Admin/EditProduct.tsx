@@ -1,7 +1,6 @@
 "use client";
 import axios from "axios";
-import React, { useRef, useState } from "react";
-import { Search } from "lucide-react";
+import React, { useRef, useState, useEffect } from "react";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { toast } from "sonner";
 
@@ -11,23 +10,45 @@ type ProductFormData = {
   price: number;
   discountPercentage: number;
   category: string;
-  images: any[];
-  thumbnail: number;
+  stock: number;
+  images: FileList | null;
+  thumbnail: number | null;
 };
 
-const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
+const EditProductManage = ({
+  productData,
+  setDoFetching,
+}: {
+  productData: any;
+  setDoFetching: any;
+}) => {
   const [formData, setFormData] = useState<ProductFormData>({
-    title: "",
-    description: "",
-    price: 0,
-    discountPercentage: 0,
-    category: "",
-    images: [],
-    thumbnail: 0,
+    title: productData.title,
+    description: productData.description,
+    price: productData.price,
+    discountPercentage: productData.discountPercentage,
+    category: productData.category,
+    stock: productData.stock,
+    images: null,
+    thumbnail: null,
   });
 
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // Initialize form with the current product data
+  useEffect(() => {
+    setFormData({
+      title: productData.title,
+      description: productData.description,
+      price: productData.price,
+      discountPercentage: productData.discountPercentage,
+      category: productData.category,
+      stock: productData.stock, // Update stock in formData
+      images: null,
+      thumbnail: null,
+    });
+  }, [productData]);
 
   // Handle form input changes
   const handleInputChange = (e: any) => {
@@ -40,17 +61,6 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
 
   const handleFileChange = (e: any) => {
     const { name, files } = e.target;
-
-    const selectedFiles = Array.from(files);
-    const invalidFiles = selectedFiles.filter(
-      (file: any) => !file.type.startsWith("image/")
-    );
-
-    if (invalidFiles.length > 0) {
-      alert("Please select only image files.");
-      return;
-    }
-
     if (name === "images") {
       setFormData({
         ...formData,
@@ -58,7 +68,7 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
       });
     }
   };
-  console.log(formData.images);
+
   const handleThumbnailChange = (index: number) => {
     setFormData({
       ...formData,
@@ -66,32 +76,29 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
     });
   };
 
-  // // Helper function to upload images and get URLs
-  // const uploadImage = async (image: File) => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("file", image);
-  //     formData.append("upload_preset", "NextEcommerce");
-  //     formData.append("cloud_name", "dvgw1jv0x");
+  // Helper function to upload images and get URLs (can be reused)
+  const uploadImage = async (image: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "NextEcommerce");
+      formData.append("cloud_name", "dvgw1jv0x");
 
-  //     // Replace with your upload preset
-  //     const response = await axios.post(
-  //       "https://api.cloudinary.com/v1_1/dvgw1jv0x/image/upload",
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-  //     console.log("url", response.data.secure_url);
-  //     return response.data.secure_url; // The URL of the uploaded image
-  //   } catch (error) {
-  //     console.error("Image upload failed:", error);
-
-  //     throw new Error("Image upload failed");
-  //   }
-  // };
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dvgw1jv0x/image/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data.secure_url;
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      throw new Error("Image upload failed");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,6 +112,7 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
     if (formData.discountPercentage < 0 || formData.discountPercentage > 100)
       newErrors.push("Discount percentage must be between 0 and 100.");
     if (!formData.category) newErrors.push("Category is required.");
+    if (formData.stock < 0) newErrors.push("Stock must be a positive number.");
     if (!formData.images || formData.images.length === 0)
       newErrors.push("At least one image is required.");
     if (formData.thumbnail === null)
@@ -112,32 +120,30 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
 
     if (newErrors.length > 0) {
       setErrors(newErrors);
+      newErrors.map((err) => toast.error(err));
       return;
     }
 
     try {
       setLoading(true);
-      //   const uploadedImages = await Promise.all(
-      //     Array.from(formData.images!).map((image: File) => uploadImage(image))
-      //   );
-      //   const thumbnailUrl = await uploadImage(
-      //     Array.from(formData.images!)[formData.thumbnail!]
-      //   );
 
-      // Prepare JSON data for API request
-      const productData = {
+      // Assuming you are updating the product
+      const updatedProductData = {
         title: formData.title,
         description: formData.description,
         category: formData.category,
         price: formData.price,
         discountPercentage: formData.discountPercentage,
-        images: formData.images,
-        thumbnail: formData.images[formData.thumbnail],
+        stock: formData.stock, // Include stock in the update
+        images:
+          "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg",
+        thumbnail:
+          "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg",
       };
 
-      const response = await axios.post(
-        "http://localhost:4000/products",
-        productData,
+      const response = await axios.patch(
+        `http://localhost:4000/products/${productData._id}`,
+        updatedProductData,
         {
           withCredentials: true,
           headers: {
@@ -146,7 +152,8 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
         }
       );
 
-      toast.success("Product created successfully!");
+      toast.success("Product updated successfully!");
+
       dialogclose.current.click();
       setFormData({
         title: "",
@@ -154,12 +161,13 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
         price: 0,
         discountPercentage: 0,
         category: "",
-        images: [],
-        thumbnail: 0,
+        stock: 0, // Reset stock
+        images: null,
+        thumbnail: null,
       });
+      setDoFetching(Math.random().toString());
     } catch (error) {
-      console.log(error);
-      alert("Error creating product");
+      alert("Error updating product");
     } finally {
       setLoading(false);
       setDoFetching("dasda");
@@ -173,8 +181,9 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
       price: 0,
       discountPercentage: 0,
       category: "",
-      images: [],
-      thumbnail: 0,
+      stock: 0, // Reset stock
+      images: null,
+      thumbnail: null,
     });
     setErrors([]);
   };
@@ -182,8 +191,8 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
   const dialogclose = useRef<any>();
 
   return (
-    <div className=" bg-white ">
-      <h1 className="font-semibold text-xl mb-4">Add New Product</h1>
+    <div className="bg-white">
+      <h1 className="font-semibold text-xl mb-4">Edit Product</h1>
 
       {errors.length > 0 && (
         <div className="mb-4">
@@ -249,7 +258,6 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
                 onChange={handleInputChange}
                 className="mt-1 p-2 w-full border border-gray-300 text-sm outline-none rounded-md"
                 min="0"
-                step="any"
                 required
               />
             </div>
@@ -269,7 +277,6 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
                 onChange={handleInputChange}
                 className="mt-1 p-2 w-full border border-gray-300 text-sm outline-none rounded-md"
                 min="0"
-                step={"any"}
                 max="100"
                 required
               />
@@ -294,6 +301,27 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
             />
           </div>
 
+          {/* New stock input field */}
+          <div>
+            <label
+              htmlFor="stock"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Stock
+            </label>
+            <input
+              type="number"
+              id="stock"
+              name="stock"
+              value={formData.stock}
+              onChange={handleInputChange}
+              className="mt-1 p-2 w-full border border-gray-300 text-sm outline-none rounded-md"
+              min="0"
+              required
+            />
+          </div>
+
+          {/* Image preview and file input remains the same */}
           <div>
             <label
               htmlFor="images"
@@ -306,10 +334,8 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
               id="images"
               name="images"
               multiple
-              accept="image/*"
               onChange={handleFileChange}
               className="mt-1 p-2 w-full border border-gray-300 text-sm outline-none rounded-md"
-              required
             />
           </div>
 
@@ -351,7 +377,7 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
               loading ? "bg-gray-400" : "bg-green-500"
             } text-white rounded-md`}
           >
-            {loading ? "Creating..." : "Create Product"}
+            {loading ? "Updating..." : "Update Product"}
           </button>
           <DialogClose ref={dialogclose} />
         </div>
@@ -360,4 +386,4 @@ const AddProductManage = ({ setDoFetching }: { setDoFetching: any }) => {
   );
 };
 
-export default AddProductManage;
+export default EditProductManage;

@@ -24,15 +24,51 @@ const Cart = () => {
     console.log("cart updated");
     // eslint-disable-next-line
   }, [cart]);
+
+  // async function handlePayment() {
+  //   const stripe = await loadStripe(
+  //     "pk_test_51P7cVS08rJiDP5N1ZvR5aQvx8QWOTEUqLugpiJPjc8iwMZa2SeRRJgac21vXKKNtWWM3t5PwwbNzdYvwPPqsPCRe00M8NZQEvT"
+  //   );
+
+  //   try {
+  //     const res = await axios.post("", cart, {
+  //       withCredentials: true,
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     // const result = stripe?.redirectToCheckout({
+  //     //   // sessionId: res.id,
+  //     // });
+  //     // if (result.error) {
+  //     //   console.error("Payment failed:", result.error);
+  //     // } else {
+  //     //   console.log("Payment succeeded, see below:", result);
+  //     // }
+  //   } catch (error) {
+  //     console.error("Error making payment:", error);
+  //   }
+  // }
+
+  const CalculateSubTotalPrice = () => {
+    const cartTotal = cart.reduce(
+      (acc, curr) => acc + curr.price * curr.quantity,
+      0
+    );
+    return cartTotal.toFixed(2);
+  };
+
   return (
     <div>
       <button
-        className="flex gap-1 items-center"
+        className="flex gap-1 items-center mb-1"
         onClick={() => {
           dispatch(toogleShowCart({}));
         }}
       >
-        <PiHandbagLight size={20} />
+        <span className="">
+          <PiHandbagLight size={20} />
+        </span>
         <div className="bg-black w-5 h-5 text-yellow-400 p-1 text-sm text-center rounded-full flex justify-center items-center">
           <p>{cartItems.length}</p>
         </div>
@@ -119,14 +155,17 @@ const Cart = () => {
         <div className="total py-2 space-y-2  ">
           <div className="sub flex justify-between text-sm ">
             <h1>Subtotal</h1>
-            <p>${CalculateTotalPrice().toFixed(2)}</p>
+            <p>${CalculateSubTotalPrice()}</p>
           </div>
           <div className=" flex justify-between border-t text-lg font-medium ">
             <h1>Total</h1>
             <p>${CalculateTotalPrice().toFixed(2)}</p>
           </div>
           <Link href={"/cart"}>
-            <button className="bg-black   text-white  p-3  opacity-100  transition-all duration-300 w-full mt-2 rounded-md">
+            <button
+              // onClick={handlePayment}
+              className="bg-black   text-white  p-3  opacity-100  transition-all duration-300 w-full mt-2 rounded-md"
+            >
               Checkout
             </button>
           </Link>

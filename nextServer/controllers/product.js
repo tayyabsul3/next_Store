@@ -6,7 +6,45 @@ const apiFeatures = require("../utils/apiFeatures");
 const { compare } = require("bcryptjs");
 
 exports.create = catchAsyncErrors(async (req, res, next) => {
+  exports.create = catchAsyncErrors(async (req, res, next) => {
+    const myCloud = await cloudinary.v2.uploader.upload(req.body.thumbnail, {
+      folder: "EcommerceNastp/ProductPictures",
+      width: 350,
+      crop: "scale",
+    });
+
+    req.body.thumbnail = myCloud.secure_url;
+    const imageUploadPromises = req.body.images.map(async (image) => {
+      const uploadResult = await cloudinary.v2.uploader.upload(image, {
+        folder: "EcommerceNastp/ProductPictures",
+        width: 350,
+        crop: "scale",
+      });
+      return uploadResult.secure_url;
+    });
+
+    const uploadedImages = await Promise.all(imageUploadPromises);
+
+    req.body.images = uploadedImages;
+
+    req.body.user = req.user._id;
+
+    const product = await new Product(req.body);
+
+    if (!product) {
+      return next(new ErrorHandler("Product creation failed", 404));
+    }
+
+    await product.save();
+
+    res.status(200).json({
+      success: true,
+      product,
+    });
+  });
+
   req.body.user = req.user._id;
+
   const product = await new Product(req.body);
 
   if (!product) {
@@ -92,12 +130,12 @@ exports.delete = catchAsyncErrors(async (req, res, next) => {
 // CReate Review
 
 exports.createReview = catchAsyncErrors(async (req, res, next) => {
-  const { Comment, rating, productId } = req.body;
+  const { comment, rating, productId } = req.body;
   const review = {
     user: req.user._id,
     name: req.user.name,
     rating: Number(rating),
-    Comment,
+    comment,
   };
   console.log(review);
 
@@ -114,7 +152,7 @@ exports.createReview = catchAsyncErrors(async (req, res, next) => {
   if (isReviewed) {
     product.reviews.forEach((rev) => {
       if (rev.user.toString() === req.user._id.toString()) {
-        rev.Comment = Comment;
+        rev.comment = comment;
         rev.rating = rating;
       }
     });

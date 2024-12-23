@@ -20,7 +20,7 @@ const Page = ({ params }: any) => {
       console.error("Error fetching data:", error);
     }
   };
-  console.log(data);
+  console.log("data", data);
   // Fetch the data when the component mounts
   useEffect(() => {
     if (id) {
@@ -41,7 +41,7 @@ const Page = ({ params }: any) => {
   return (
     <div>
       <div className="mx-auto max-w-7xl mt-20 max-2xl:px-10">
-        <ProductDetails data={data}  />
+        <ProductDetails data={data} />
         <SubSection data={data} />
       </div>
       <NewsLetter />

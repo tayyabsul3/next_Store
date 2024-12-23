@@ -103,7 +103,7 @@ const Details = () => {
     });
   }, [user]);
   return (
-    <div className="AccountDetails w-full flex gap-10">
+    <div className="AccountDetails w-full flex flex-col sm:flex-row md:flex-col lg:flex-row gap-10">
       <div className="space-y-5 flex-1">
         <h1 className="font-semibold text-xl">Account Details</h1>
         <div className="field flex flex-col gap-2 w-full">
