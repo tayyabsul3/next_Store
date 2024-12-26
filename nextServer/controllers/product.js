@@ -6,25 +6,25 @@ const apiFeatures = require("../utils/apiFeatures");
 const cloudinary = require("cloudinary");
 const { compare } = require("bcryptjs");
 exports.create = catchAsyncErrors(async (req, res, next) => {
-  const myCloud = await cloudinary.v2.uploader.upload(req.body.thumbnail, {
-    folder: "EcommerceNastp/ProductPictures",
-    width: 350,
-    crop: "scale",
-  });
+  // const myCloud = await cloudinary.v2.uploader.upload(req.body.thumbnail, {
+  //   folder: "EcommerceNastp/ProductPictures",
+  //   width: 350,
+  //   crop: "scale",
+  // });
 
-  req.body.thumbnail = myCloud.secure_url;
-  const imageUploadPromises = req.body.images.map(async (image) => {
-    const uploadResult = await cloudinary.v2.uploader.upload(image, {
-      folder: "EcommerceNastp/ProductPictures",
-      width: 350,
-      crop: "scale",
-    });
-    return uploadResult.secure_url;
-  });
+  // req.body.thumbnail = myCloud.secure_url;
+  // const imageUploadPromises = req.body.images.map(async (image) => {
+  //   const uploadResult = await cloudinary.v2.uploader.upload(image, {
+  //     folder: "EcommerceNastp/ProductPictures",
+  //     width: 350,
+  //     crop: "scale",
+  //   });
+  //   return uploadResult.secure_url;
+  // });
 
-  const uploadedImages = await Promise.all(imageUploadPromises);
+  // const uploadedImages = await Promise.all(imageUploadPromises);
 
-  req.body.images = uploadedImages;
+  // req.body.images = uploadedImages;
 
   req.body.user = req.user._id;
 

@@ -35,6 +35,10 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Unable to Create Order", 403));
   }
   console.log("done");
+
+  order.orderItems.forEach(async (o) => {
+    await updateStocks(o.product, o.quantity);
+  });
   await order.save();
   console.log("done 2");
 
@@ -84,7 +88,7 @@ exports.getAllOrders_Admin = catchAsyncErrors(async (req, res, next) => {
 exports.getOrder = catchAsyncErrors(async (req, res, next) => {
   const orders = await Order.findById(req.params.id);
 
-  if (!ordesr) {
+  if (!orders) {
     return next(new ErrorHandler("Order not found", 404));
   }
 
@@ -101,9 +105,16 @@ exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
   if (!order) {
     return next(new ErrorHandler("Order not Found", 403));
   }
+  if (order.orderStatus === "Delivered") {
+  } else {
+    order.orderItems.forEach(async (o) => {
+      await updateStocks(o.product, o.quantity, "+");
+    });
+  }
 
   res.status(200).json({
     sucess: true,
+    order,
     message: "Order succesFully deleted",
   });
 });
@@ -121,7 +132,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
   }
 
   // order.orderItems.forEach(async (o) => {
-  //   await updateStocks(o.Product, o.quantity);
+  //   await updateStocks(o.product, o.quantity);
   // });
 
   order.orderStatus = req.body.status;
@@ -137,13 +148,15 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-async function updateStocks(id, quantity) {
+async function updateStocks(id, quantity, type) {
   const product = await Product.findById(id);
   if (!product) {
     return next(new ErrorHandler("Unable to find Product", 403));
   }
+  console.log("before", product.stock);
 
-  product.Stock -= quantity;
+  type==="+"? (product.stock += quantity) : (product.stock -= quantity);
+  console.log("after", product.stock);
 
   await product.save({ validateBeforeSave: false });
 }

@@ -6,7 +6,7 @@ module.exports = (err, req, res, next) => {
 
   //mongo db error
   if (err.name === "CastError") {
-    const message = `Resource not found: ${err.path}`;
+    const message = `Not found: ${err.path}`;
     err = new ErrorHandler(message, 400);
   }
   //duplicate data entered error handler
