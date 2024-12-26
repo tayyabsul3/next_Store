@@ -3,63 +3,47 @@ const ErrorHandler = require("../utils/errorhandler");
 const Product = modal.Product;
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const apiFeatures = require("../utils/apiFeatures");
+const cloudinary = require("cloudinary");
 const { compare } = require("bcryptjs");
-
 exports.create = catchAsyncErrors(async (req, res, next) => {
-  exports.create = catchAsyncErrors(async (req, res, next) => {
-    const myCloud = await cloudinary.v2.uploader.upload(req.body.thumbnail, {
+  const myCloud = await cloudinary.v2.uploader.upload(req.body.thumbnail, {
+    folder: "EcommerceNastp/ProductPictures",
+    width: 350,
+    crop: "scale",
+  });
+
+  req.body.thumbnail = myCloud.secure_url;
+  const imageUploadPromises = req.body.images.map(async (image) => {
+    const uploadResult = await cloudinary.v2.uploader.upload(image, {
       folder: "EcommerceNastp/ProductPictures",
       width: 350,
       crop: "scale",
     });
-
-    req.body.thumbnail = myCloud.secure_url;
-    const imageUploadPromises = req.body.images.map(async (image) => {
-      const uploadResult = await cloudinary.v2.uploader.upload(image, {
-        folder: "EcommerceNastp/ProductPictures",
-        width: 350,
-        crop: "scale",
-      });
-      return uploadResult.secure_url;
-    });
-
-    const uploadedImages = await Promise.all(imageUploadPromises);
-
-    req.body.images = uploadedImages;
-
-    req.body.user = req.user._id;
-
-    const product = await new Product(req.body);
-
-    if (!product) {
-      return next(new ErrorHandler("Product creation failed", 404));
-    }
-
-    await product.save();
-
-    res.status(200).json({
-      success: true,
-      product,
-    });
+    return uploadResult.secure_url;
   });
+
+  const uploadedImages = await Promise.all(imageUploadPromises);
+
+  req.body.images = uploadedImages;
 
   req.body.user = req.user._id;
 
   const product = await new Product(req.body);
 
   if (!product) {
-    return next(new ErrorHandler("product not found", 404));
+    return next(new ErrorHandler("Product creation failed", 404));
   }
+
   await product.save();
 
   res.status(200).json({
-    sucess: true,
+    success: true,
     product,
   });
 });
 
 exports.getAll = catchAsyncErrors(async (req, res, next) => {
-  let resultperpage = 8;
+  let resultperpage = 20;
   let productCount = await Product.countDocuments();
 
   // const currentpage = Number(req.query.page) || 1;

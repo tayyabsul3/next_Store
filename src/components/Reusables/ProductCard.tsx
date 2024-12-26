@@ -71,6 +71,7 @@ const ProductCard = ({ tag, product }: Props) => {
           </div>
           <button
             onClick={() => {
+              console.log(product);
               dispatch(
                 addtocart({
                   item: { ...product, quantity: 1 },

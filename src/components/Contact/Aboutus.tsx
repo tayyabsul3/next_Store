@@ -14,7 +14,7 @@ const Aboutus = () => {
         <h1>Contact us</h1>
       </div>
       <div className="info flex flex-col gap-2 mt-5 max-w-3xl">
-        <h1 className="text-5xl font-medium ">
+        <h1 className="text-3xl md:text-5xl font-medium ">
           We believe in sustainable decor. We’re passionate about life at home.
         </h1>
         <p>
@@ -25,16 +25,22 @@ const Aboutus = () => {
           the present
         </p>
       </div>
-      <div className="my-20 flex bg-gray-50">
-        <img src="/aboutus.png" alt="ABoutuspng" />
-        <div className="text p-20 flex flex-col justify-center items-center w-full">
+      <div className="my-20 flex max-md:flex-col bg-gray-50">
+        <div className="min-w-[50%]">
+          <img
+            src="/aboutus.png"
+            alt="ABoutuspng"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="text p-8 sm:p-20 flex flex-col justify-center items-center w-full">
           <div className="w-fit mx-auto ">
-            <h1 className="text-4xl font-medium mb-4">About Us</h1>
-            <p className="mt-2 max-w-sm">
+            <h1 className="text-2xl sm:text-4xl font-medium mb-4">About Us</h1>
+            <p className="mt-2 max-w-sm max-sm:text-sm">
               3legant is a gift & decorations store based in HCMC, Vietnam. Est
               since 2019.
             </p>
-            <p className="mt-2 max-w-sm">
+            <p className="mt-2 max-w-sm max-sm:text-sm">
               Our customer service is always prepared to support you 24/7
             </p>
             <button className="flex mt-4  items-center border-b border-black justify-between w-fit gap-2 hover:scale-105 transition-all duration-300 ">

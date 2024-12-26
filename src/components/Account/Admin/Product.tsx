@@ -29,7 +29,7 @@ const Product = () => {
     try {
       setLoading(true);
       const { data } = await axios.get(
-        url ? url : "http://localhost:4000/products?page=1",
+        url ? url : "http://localhost:4000/products",
         {
           withCredentials: true,
           headers: {
@@ -49,7 +49,6 @@ const Product = () => {
   // Call fetch products when the component mounts or when doFetching changes
   useEffect(() => {
     fetchProducts(``);
-    console.log("fasfaf");
   }, [doFetching]);
 
   // Handle product deletion
@@ -93,7 +92,7 @@ const Product = () => {
           >
             <input
               type="search"
-              placeholder="Search by id or title"
+              placeholder="Search by  title"
               onChange={(e) => setsearchquery(e.target.value)}
               className="bg-transparent w-full text-sm lg:min-w-[200px] p-2 border-none outline-none"
             />

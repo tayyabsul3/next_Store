@@ -102,7 +102,7 @@ const Cart = () => {
             cartItems.length > 0 &&
             cartItems.map((item: Product, index: number) => (
               <div className="flex gap-2" key={index}>
-                <div className="w-24 flex justify-center items-center bg-gray-200">
+                <div className="w-24 h-28 flex justify-center items-center bg-gray-200">
                   <img
                     src={item.images[0]}
                     alt="item"

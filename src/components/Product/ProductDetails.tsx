@@ -58,8 +58,12 @@ const ProductDetails = ({ data: apidata }: any) => {
             <div className="mt-5 gap-5 flex items-center ">
               {data.images &&
                 data.images.map((img: string, i: number) => (
-                  <div className="bg-gray-100 " key={i}>
-                    <img src={img} alt="productImage" className="w-[7.5rem]" />
+                  <div className="bg-gray-100 h-32  " key={i}>
+                    <img
+                      src={img}
+                      alt="productImage"
+                      className="w-[7.5rem] h-full object-contain"
+                    />
                   </div>
                 ))}
             </div>

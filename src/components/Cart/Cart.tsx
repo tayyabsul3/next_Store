@@ -9,7 +9,7 @@ const Cart = ({ item }: { item: Product }) => {
 
   return (
     <div className="row flex items-center pb-10 border-b   justify-between">
-      <div className="col1 flex items-center   gap-4 w-60 ">
+      <div className="col1 flex items-center   gap-4 md:w-60 ">
         <img src={item.thumbnail} alt="productImage" className="w-20" />
         <div className="space-y-1">
           <h1 className="font-medium text-lg ">{item.title}</h1>
@@ -46,10 +46,10 @@ const Cart = ({ item }: { item: Product }) => {
           </button>
         </div>
       </div>
-      <div className="col3">
+      <div className="col3 max-md:hidden">
         <p>${item.price}</p>
       </div>
-      <div className="col4 font-semibold text-lg">
+      <div className="col4 max-md:hidden font-semibold text-lg">
         <h1>${(item.price * item.quantity).toFixed(2)}</h1>
       </div>
     </div>

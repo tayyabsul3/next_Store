@@ -39,7 +39,6 @@ const SubSection = ({ data }: { data: Product }) => {
     setreview((prev: any) => {
       return { ...prev, rating: item };
     });
-    toast.info(item);
   }
 
   const handleChnage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -95,14 +94,13 @@ const SubSection = ({ data }: { data: Product }) => {
               </div>
             </button>
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-2">
             <h1 className="text-lg font-medium">Submit your review</h1>
             <ReactStars
               count={5}
               onChange={ratingChanged}
               value={review.rating}
               size={24}
-              color2={"#ffd700"}
             />
 
             <div className="comment">
@@ -116,9 +114,9 @@ const SubSection = ({ data }: { data: Product }) => {
               </div>
               <button
                 onClick={handlesubmit}
-                className="bg-black text-white  rounded-md p-2 font-medium px-5"
+                className="bg-black text-white mt-3  rounded-md p-2 font-medium px-5"
               >
-                SubmitF
+                Submit
               </button>
             </div>
           </div>

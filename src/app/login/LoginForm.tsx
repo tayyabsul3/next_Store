@@ -80,6 +80,7 @@ const LoginForm = () => {
     <>
       {!forgotPassword ? (
         <div className=" p-10 w-full   ">
+          
           <h2 className="text-3xl font-semibold mb-4">Login</h2>
           <p className="text-gray-400 mb-6">
             Don't have an account yet?{" "}
@@ -128,7 +129,7 @@ const LoginForm = () => {
             )}
 
             <div className="flex justify-between pt-5">
-              <div className="flex items-center">
+              <div className="flex items-start">
                 <input
                   type="checkbox"
                   name="rememberMe"
@@ -139,7 +140,7 @@ const LoginForm = () => {
                       rememberMe: !formData.rememberMe,
                     })
                   }
-                  className="mr-2 mt-1 border-gray-300 rounded-md"
+                  className="mr-2 mt-2 border-gray-300 rounded-md"
                 />
                 <label className="text-gray-600">Remember me</label>
               </div>

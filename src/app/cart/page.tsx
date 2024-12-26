@@ -242,7 +242,7 @@ const page = () => {
     <div>
       <div className="mx-auto max-w-7xl mt-20 max-2xl:px-5">
         <h1 className="my-40 mb-20 text-center text-5xl font-medium">Cart</h1>
-        <div className="buttons flex justify-around my-10 ">
+        <div className="buttons max-lg:hidden flex justify-around my-10 ">
           {steps.map((step, i) => (
             <div
               key={i}
@@ -273,16 +273,20 @@ const page = () => {
         </div>
 
         {activeOption === 0 ? (
-          <div className="flex gap-10">
+          <div className="flex gap-10 flex-wrap">
             <div className="table flex-1">
               <div
                 className="headder flex w-full p-2
              justify-between  py-5 border-black border-b "
               >
-                <h1 className="font-semibold text-lg w-60">Product</h1>
+                <h1 className="font-semibold text-lg md:w-60">Product</h1>
                 <h1 className="font-semibold text-lg w-auto">Quantity</h1>
-                <h1 className="font-semibold text-lg w-auto">Price</h1>
-                <h1 className="font-semibold text-lg w-auto">Total</h1>
+                <h1 className=" max-md:hidden font-semibold text-lg w-auto">
+                  Price
+                </h1>
+                <h1 className=" max-md:hidden font-semibold text-lg w-auto">
+                  Total
+                </h1>
               </div>
               <div className="rows mt-5 p-2 flex flex-col gap-5">
                 {cartItems.map((product, i) => (
@@ -292,13 +296,15 @@ const page = () => {
                 ))}
               </div>
             </div>
-            <div className="card m-10  border-2 flex flex-col shadow-sm min-w-[500px] gap-5 rounded-lg  border-black p-10 h-fit">
-              <h1 className="font-semibold text-2xl">Cart summary</h1>
+            <div className="card xl:m-10 mb-10  border-2 flex flex-col shadow-sm xl:min-w-[500px] gap-5 rounded-lg  border-black  p-5  md:p-10 h-fit">
+              <h1 className="font-semibold text-lg md:text-2xl">
+                Cart summary
+              </h1>
               <div className="options space-y-5">
                 {shippingOptions.map((option) => (
                   <div
                     key={option.id}
-                    className={`option flex justify-between px-5 py-3 text-lg gap-2 border rounded-md ${
+                    className={`option flex justify-between px-2 md:px-5 md:py-3 p-2 md:text-lg gap-5 border rounded-md ${
                       selectedOption === option.id ? "bg-gray-100" : "bg-white"
                     }`}
                   >
@@ -347,16 +353,16 @@ const page = () => {
             </div>
           </div>
         ) : activeOption === 1 ? (
-          <div className="flex gap-10 mb-20">
-            <div className="OrderDetails flex-1 space-y-10">
-              <div className="customerDetails flex flex-col gap-5 border-2 border-black rounded-md p-10">
+          <div className="flex gap-5 md:gap-10 max-md:flex-col-reverse mb-20">
+            <div className="OrderDetails flex-1 w-full space-y-10">
+              <div className="customerDetails flex flex-col gap-5 border-2 border-black max-md:text-sm rounded-md p-5  md:p-10">
                 <h1 className="text-2xl font-medium">Shipping Address</h1>
                 <div className="field flex flex-col gap-2  w-full">
                   <label
                     htmlFor="streetAddress"
                     className="font-semibold uppercase text-sm text-gray-500"
                   >
-                    Street Address 
+                    Street Address
                   </label>
                   <input
                     type="text"
@@ -388,8 +394,7 @@ const page = () => {
                     htmlFor="country"
                     className="font-semibold uppercase text-sm text-gray-500"
                   >
-                    Country 
-                    
+                    Country
                   </label>
                   <input
                     type="text"
@@ -459,8 +464,10 @@ const page = () => {
                 Place Order
               </button>
             </div>
-            <div className="card   border-2 flex flex-col gap-5 shadow-sm min-w-[500px]  rounded-lg  border-black p-10 h-fit">
-              <h1 className="font-semibold text-2xl">Order summary</h1>
+            <div className="card   border-2 flex flex-col gap-5 shadow-sm lg:min-w-[500px] max-md:w-full  rounded-lg  border-black p-10 h-fit">
+              <h1 className="font-semibold text-xl md:text-2xl">
+                Order summary
+              </h1>
               <div className="options space-y-5 mb-5">
                 {cartItems.map((cartItem, i) => (
                   <div className="flex gap-2 pb-5 border-b" key={i}>

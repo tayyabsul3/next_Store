@@ -6,9 +6,15 @@ const Hero = () => {
   return (
     <div>
       <div className="max-w-7xl mx-auto mt-20 relative ">
-        <img src="/shopHero.png" alt="" className="w-full " />
+        <div className="h-[50vh]">
+          <img
+            src="/shopHero.png"
+            alt=""
+            className="w-full h-full object-cover "
+          />
+        </div>
         <div
-          className="content  absolute left-[50%] space-y-5 text-center top-[50%] "
+          className="content  w-full  absolute left-[50%] space-y-5 text-center top-[50%] "
           style={{
             transform: "translate(-50%,-50%)",
           }}

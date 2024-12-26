@@ -99,7 +99,7 @@ const SignupForm = () => {
           value={formData.password}
           onChange={handleChange}
         />
-        <div className="flex items-center pt-5">
+        <div className="flex items-start">
           <input
             type="checkbox"
             name="termsAgreed"
@@ -107,7 +107,7 @@ const SignupForm = () => {
             onChange={() =>
               setFormData({ ...formData, termsAgreed: !formData.termsAgreed })
             }
-            className="accent-black mr-2 mt-1 border-gray-300 rounded-md"
+            className="accent-black mr-2 mt-2 border-gray-300 rounded-md"
           />
           <label className="text-gray-600">
             I agree with{" "}

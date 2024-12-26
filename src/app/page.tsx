@@ -1,3 +1,4 @@
+import FileUpload from "@/components/FileUpload";
 import Collections from "@/components/Home/Collections";
 import Features from "@/components/Home/Features";
 import Hero from "@/components/Home/Hero";
@@ -12,6 +13,7 @@ export default function Home() {
   return (
     <main>
       <Hero />
+      <FileUpload />
       <NewArrivals />
       <Collections />
       <TopSellers />

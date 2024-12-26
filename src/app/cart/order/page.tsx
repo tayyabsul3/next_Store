@@ -64,11 +64,11 @@ const page = () => {
     <div>
       <div className="mx-auto max-w-7xl mt-20 max-2xl:px-5">
         {!Error ? (
-          <div className="p-20  flex-col gap-2 flex justify-center items-center m-20 max-w-5xl mx-auto">
-            <p className="text-2xl text-gray-600 font-semibold">
+          <div className="md:p-20 py-40  flex-col gap-2 flex justify-center items-center m-20 max-w-5xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-600 font-semibold">
               Thank you for buying 🎉
             </p>
-            <h1 className="text-5xl max-w-md mt-2 font-medium text-center ">
+            <h1 className="text-3xl md:text-5xl max-w-md mt-2 font-medium text-center ">
               Your order has been received
             </h1>
             {/* <div className="items mt-10  flex gap-10 flex-wrap my-5"> */}
@@ -91,7 +91,7 @@ const page = () => {
             </div>
             <div className="space-x-5">
               <Link href={"/"}>
-                <button className="rounded-full bg-black px-5 p-2 text-white mt-10">
+                <button className="rounded-full bg-black px-5 p-2 text-white  md:mt-10">
                   Shop More
                 </button>
               </Link>
